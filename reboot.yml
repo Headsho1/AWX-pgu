@@ -1,15 +1,21 @@
-
 ---
-- name: Linux Mint Clients neustarten
+- name: Reboot Linux Mint
   hosts: all
   become: true
+  become_user: root
   become_method: sudo
   gather_facts: false
 
   tasks:
-    - name: Neustart durchführen
+    - name: Berechtigungen überprüfen
+      ansible.builtin.command: id
+      register: user_check
+
+    - name: Berechtigungen ausgeben
+      ansible.builtin.debug:
+        var: user_check.stdout
+
+    - name: Client neustarten
       ansible.builtin.reboot:
-        msg: "Geplanter Neustart durch AWX"
         reboot_timeout: 600
         post_reboot_delay: 15
-      become: true
