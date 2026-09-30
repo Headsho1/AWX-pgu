@@ -1,0 +1,12 @@
+---
+- name: Linux Mint Clients neustarten
+  hosts: all
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Neustart durchführen
+      ansible.builtin.reboot:
+        msg: "Neustart durch AWX Patch-Management"
+        reboot_timeout: 600
+        post_reboot_delay: 15
