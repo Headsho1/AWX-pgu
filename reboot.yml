@@ -3,12 +3,13 @@
 - name: Linux Mint Clients neustarten
   hosts: all
   become: true
+  become_method: sudo
   gather_facts: false
 
   tasks:
     - name: Neustart durchführen
       ansible.builtin.reboot:
-        msg: "Geplanter Neustart durch AWX Patch-Management"
+        msg: "Geplanter Neustart durch AWX"
         reboot_timeout: 600
-        connect_timeout: 10
         post_reboot_delay: 15
+      become: true
