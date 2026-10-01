@@ -1,21 +1,22 @@
 ---
-- name: Reboot Linux Mint
+- name: Linux-Clients neu starten
   hosts: all
   become: true
-  become_user: administrator
-  become_method: sudo
   gather_facts: false
 
   tasks:
-    - name: Berechtigungen überprüfen
-      ansible.builtin.command: id
-      register: user_check
-
-    - name: Berechtigungen ausgeben
-      ansible.builtin.debug:
-        var: user_check.stdout
-
-    - name: Client neustarten
+    - name: Rechner neu starten und warten, bis er wieder erreichbar ist
       ansible.builtin.reboot:
+        msg: "Neustart durch Ansible AWX"
+        pre_reboot_delay: 0
         reboot_timeout: 600
-        post_reboot_delay: 15
+        test_command: uptime
+
+    - name: Uptime nach dem Neustart anzeigen
+      ansible.builtin.command: uptime
+      register: uptime_result
+      changed_when: false
+
+    - name: Ergebnis ausgeben
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} ist wieder online: {{ uptime_result.stdout }}"
